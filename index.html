@@ -1,1 +1,100 @@
-<h1>Ben Stinkt</h1>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texte kopieren leicht gemacht</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        .copy-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .copy-text {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            background: #f9f9f9;
+            color: #333;
+        }
+        .copy-button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            color: #fff;
+            background: #66a6ff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .copy-button:hover {
+            background: #557fc0;
+        }
+        footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Texte kopieren leicht gemacht</h1>
+        <p>Hier kannst du Texte eingeben und mit einem Klick auf den Button kopieren.</p>
+        <div class="copy-box">
+            <textarea id="text" class="copy-text" rows="4">Hier ist ein Beispieltext. Du kannst ihn kopieren oder durch deinen eigenen Text ersetzen.</textarea>
+            <button class="copy-button" onclick="copyText()">Kopieren</button>
+        </div>
+        <footer>
+            &copy; 2025 Deine Website | Einfach & elegant
+        </footer>
+    </div>
+
+    <script>
+        function copyText() {
+            const textArea = document.getElementById('text');
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // Für mobile Geräte
+            document.execCommand('copy');
+            alert('Text wurde kopiert!');
+        }
+    </script>
+</body>
+</html>
+
