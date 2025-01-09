@@ -48,6 +48,11 @@
             outline: none;
             background: #f9f9f9;
             color: #333;
+            resize: none;
+        }
+        .copy-text[readonly] {
+            background: #e9ecef;
+            cursor: default;
         }
         .copy-button {
             position: absolute;
@@ -76,19 +81,41 @@
 <body>
     <div class="container">
         <h1>Texte kopieren leicht gemacht</h1>
-        <p>Hier kannst du Texte eingeben und mit einem Klick auf den Button kopieren.</p>
+        <p>Hier kannst du aus vorgegebenen Texten auswählen und sie mit einem Klick kopieren.</p>
+
         <div class="copy-box">
-            <textarea id="text" class="copy-text" rows="4">Hier ist ein Beispieltext. Du kannst ihn kopieren oder durch deinen eigenen Text ersetzen.</textarea>
-            <button class="copy-button" onclick="copyText()">Kopieren</button>
+            <textarea id="text1" class="copy-text" rows="2" readonly>Text 1: Das ist der erste Beispieltext.</textarea>
+            <button class="copy-button" onclick="copyText('text1')">Kopieren</button>
         </div>
+
+        <div class="copy-box">
+            <textarea id="text2" class="copy-text" rows="2" readonly>Text 2: Hier ist der zweite vorgegebene Text.</textarea>
+            <button class="copy-button" onclick="copyText('text2')">Kopieren</button>
+        </div>
+
+        <div class="copy-box">
+            <textarea id="text3" class="copy-text" rows="2" readonly>Text 3: Ein weiterer Text, der kopiert werden kann.</textarea>
+            <button class="copy-button" onclick="copyText('text3')">Kopieren</button>
+        </div>
+
+        <div class="copy-box">
+            <textarea id="text4" class="copy-text" rows="2" readonly>Text 4: Noch ein Beispieltext zum Kopieren.</textarea>
+            <button class="copy-button" onclick="copyText('text4')">Kopieren</button>
+        </div>
+
+        <div class="copy-box">
+            <textarea id="text5" class="copy-text" rows="2" readonly>Text 5: Der letzte Text in der Liste.</textarea>
+            <button class="copy-button" onclick="copyText('text5')">Kopieren</button>
+        </div>
+
         <footer>
             &copy; 2025 Deine Website | Einfach & elegant
         </footer>
     </div>
 
     <script>
-        function copyText() {
-            const textArea = document.getElementById('text');
+        function copyText(id) {
+            const textArea = document.getElementById(id);
             textArea.select();
             textArea.setSelectionRange(0, 99999); // Für mobile Geräte
             document.execCommand('copy');
