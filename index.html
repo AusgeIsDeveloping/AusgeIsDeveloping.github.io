@@ -1,118 +1,136 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AusgeIsDeveloping</title>
+    <title>Feuerwerk</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #89f7fe, #66a6ff);
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: black;
+            overflow: hidden;
         }
-        .container {
-            background: #fff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 600px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #444;
-        }
-        p {
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #555;
-            margin-bottom: 1.5rem;
-        }
-        .copy-box {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-        .copy-text {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            background: #f9f9f9;
-            color: #333;
-            resize: none;
-        }
-        .copy-text[readonly] {
-            background: #e9ecef;
-            cursor: default;
-        }
-        .copy-button {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            color: #fff;
-            background: #66a6ff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .copy-button:hover {
-            background: #557fc0;
-        }
-        footer {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: #666;
+
+        canvas {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Aewpuu</h1>
-        <p>Bruh idk whats fit in here.</p>
-
-        <div class="copy-box">
-            <textarea id="text1" class="copy-text" rows="2" readonly>loadstring(game:HttpGet("https://raw.githubusercontent.com/AusgeIsDeveloping/Aewmm2/refs/heads/main/code.txt"))()</textarea>
-            <button class="copy-button" onclick="copyText('text1')">Aewmm2</button>
-        </div>
-
-        <div class="copy-box">
-            <textarea id="text2" class="copy-text" rows="2" readonly>loadstring(game:HttpGet('https://raw.githubusercontent.com/AusgeIsDeveloping/walltrough/refs/heads/main/code.txt'))()</textarea>
-            <button class="copy-button" onclick="copyText('text2')">Walltrough</button>
-        </div>
-
-        <div class="copy-box">
-            <textarea id="text3" class="copy-text" rows="2" readonly>https://raw.githubusercontent.com/AusgeIsDeveloping/aewdbrage/refs/heads/main/code.txt</textarea>
-            <button class="copy-button" onclick="copyText('text3')">AewDBrage</button>
-        </div>
-
-        <footer>
-            &copy; 2025 AusgeIsDeveloping
-
-        </footer>
-    </div>
+    <canvas id="fireworks"></canvas>
 
     <script>
-        function copyText(id) {
-            const textArea = document.getElementById(id);
-            textArea.select();
-            textArea.setSelectionRange(0, 99999); // Für mobile Geräte
-            document.execCommand('copy');
-            alert('Copied!');
+        const canvas = document.getElementById("fireworks");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, color, speedX, speedY, life) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.life = life;
+                this.alpha = 1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life--;
+                this.alpha = Math.max(this.life / 50, 0);
+            }
+
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
         }
+
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.targetY = Math.random() * canvas.height / 2;
+                this.speedY = -Math.random() * 4 - 6;
+                this.exploded = false;
+                this.particles = [];
+                this.color = `rgba(255, 105, 180, 1)`; // Pink color
+            }
+
+            update() {
+                if (!this.exploded) {
+                    this.y += this.speedY;
+                    if (this.y <= this.targetY) {
+                        this.exploded = true;
+                        this.explode();
+                    }
+                } else {
+                    this.particles.forEach((particle, index) => {
+                        particle.update();
+                        if (particle.life <= 0) {
+                            this.particles.splice(index, 1);
+                        }
+                    });
+                }
+            }
+
+            explode() {
+                const particleCount = 50; // Reduced for performance
+                for (let i = 0; i < particleCount; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 4 + 1;
+                    const speedX = Math.cos(angle) * speed;
+                    const speedY = Math.sin(angle) * speed;
+                    const color = `rgba(255, 105, 180, 1)`; // Pink color for particles
+                    this.particles.push(new Particle(this.x, this.y, color, speedX, speedY, 50));
+                }
+            }
+
+            draw() {
+                if (!this.exploded) {
+                    ctx.globalAlpha = 1;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                } else {
+                    this.particles.forEach(particle => particle.draw());
+                }
+            }
+        }
+
+        let fireworks = [];
+
+        function animate() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            fireworks.forEach((firework, index) => {
+                firework.update();
+                firework.draw();
+                if (firework.exploded && firework.particles.length === 0) {
+                    fireworks.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        function launchFirework() {
+            const x = Math.random() * canvas.width;
+            const y = canvas.height;
+            fireworks.push(new Firework(x, y));
+        }
+
+        setInterval(launchFirework, 500); // Automatically launch fireworks every 500ms
+
+        animate();
     </script>
 </body>
 </html>
-
