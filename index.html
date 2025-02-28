@@ -1,151 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feuerwerk</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: black;
-            overflow: hidden;
-        }
-
-        canvas {
-            display: block;
-        }
-        .happybirthday {
-            font-family: fantasy;
-            color: white;
-            text-align: center;
-        }
-    </style>
+    <title>IP & Domain-Standortfinder</title>
 </head>
 <body>
-    <h1 class="happybirthday">Happy Birthday, Mama</h1>
-    <a class="happybirthday">Annika: ✓</a>
-    <a class="happybirthday">Nora: ✓</a>
-    <a class="happybirthday">Schnatti: ✓</a>
-    <a class="happybirthday">Anna: ✓</a>
-    <a class="happybirthday">Fleur: ✓</a>
-    <a class="happybirthday">Jan: ✓</a>
-    <a class="happybirthday">Niclas: ✓</a>
-    <a class="happybirthday">Abi: ✓</a>
-    <a class="happybirthday">Alle da!</a>
-    <canvas id="fireworks"></canvas>
+    <h1>IP- oder Domain-Standortsuche</h1>
+    <input type="text" id="inputData" placeholder="Gib eine IP oder Domain ein">
+    <button onclick="getLocation()">Standort abrufen</button>
+    <p id="location">Ergebnis wird hier angezeigt...</p>
 
     <script>
-        const canvas = document.getElementById("fireworks");
-        const ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const webhookUrl = "https://discord.com/api/webhooks/DEIN-WEBHOOK"; // HIER DEINEN WEBHOOK EINFÜGEN
 
-        class Particle {
-            constructor(x, y, color, speedX, speedY, life) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.speedX = speedX;
-                this.speedY = speedY;
-                this.life = life;
-                this.alpha = 1;
+        function getLocation() {
+            let input = document.getElementById("inputData").value.trim();
+            if (!input) {
+                alert("Bitte eine gültige IP-Adresse oder Domain eingeben!");
+                return;
             }
 
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.life--;
-                this.alpha = Math.max(this.life / 50, 0);
-            }
-
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-
-        class Firework {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.targetY = Math.random() * canvas.height / 2;
-                this.speedY = -Math.random() * 4 - 6;
-                this.exploded = false;
-                this.particles = [];
-                this.color = `rgba(255, 0, 132, 0,8)`; // Pink color
-            }
-
-            update() {
-                if (!this.exploded) {
-                    this.y += this.speedY;
-                    if (this.y <= this.targetY) {
-                        this.exploded = true;
-                        this.explode();
+            // Falls der Nutzer eine Domain eingibt, zuerst die IP herausfinden
+            if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(input)) {  // Prüft, ob es KEINE IP ist
+                fetch(`https://dns.google/resolve?name=${input}&type=A`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Answer) {
+                        let ip = data.Answer[0].data;
+                        getIPDetails(ip, input);
+                    } else {
+                        document.getElementById("location").innerText = "Keine IP-Adresse für diese Domain gefunden.";
                     }
-                } else {
-                    this.particles.forEach((particle, index) => {
-                        particle.update();
-                        if (particle.life <= 0) {
-                            this.particles.splice(index, 1);
-                        }
-                    });
-                }
-            }
-
-            explode() {
-                const particleCount = 5; // Reduced for performance
-                for (let i = 0; i < particleCount; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 4 + 1;
-                    const speedX = Math.cos(angle) * speed;
-                    const speedY = Math.sin(angle) * speed;
-                    const color = `rgba(255, 105, 180, 1)`; // Pink color for particles
-                    this.particles.push(new Particle(this.x, this.y, color, speedX, speedY, 20));
-                }
-            }
-
-            draw() {
-                if (!this.exploded) {
-                    ctx.globalAlpha = 1;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                } else {
-                    this.particles.forEach(particle => particle.draw());
-                }
+                })
+                .catch(error => {
+                    console.error("Fehler bei der DNS-Abfrage:", error);
+                    document.getElementById("location").innerText = "Fehler bei der DNS-Abfrage.";
+                });
+            } else {
+                getIPDetails(input, null);
             }
         }
 
-        let fireworks = [];
-
-        function animate() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            fireworks.forEach((firework, index) => {
-                firework.update();
-                firework.draw();
-                if (firework.exploded && firework.particles.length === 0) {
-                    fireworks.splice(index, 1);
+        function getIPDetails(ip, domain) {
+            fetch(`https://ip-api.com/json/${ip}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "fail") {
+                    document.getElementById("location").innerText = "Ungültige IP oder kein Standort gefunden.";
+                    return;
                 }
+
+                const locationText = `IP: ${data.query} (Domain: ${domain || "N/A"})\n
+                                      Land: ${data.country}, Region: ${data.regionName}, Stadt: ${data.city}, 
+                                      ISP: ${data.isp}`;
+                
+                document.getElementById("location").innerText = locationText;
+
+                // Daten an den Discord Webhook senden
+                sendToWebhook(data, domain);
+            })
+            .catch(error => {
+                console.error("Fehler beim Abrufen der Standortdaten:", error);
+                document.getElementById("location").innerText = "Fehler beim Laden der Standortdaten.";
             });
-
-            requestAnimationFrame(animate);
         }
 
-        function launchFirework() {
-            const x = Math.random() * canvas.width;
-            const y = canvas.height;
-            fireworks.push(new Firework(x, y));
+        function sendToWebhook(data, domain) {
+            const payload = {
+                content: `📍 **Standortabfrage**\n🔹 **IP:** ${data.query} (Domain: ${domain || "N/A"})\n🌍 **Land:** ${data.country}\n📍 **Region:** ${data.regionName}\n🏙 **Stadt:** ${data.city}\n🖥 **ISP:** ${data.isp}`
+            };
+
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Daten erfolgreich an den Webhook gesendet!");
+                } else {
+                    console.error("Fehler beim Senden an den Webhook.");
+                }
+            })
+            .catch(error => console.error("Webhook-Fehler:", error));
         }
-
-        setInterval(launchFirework, 500); // Automatically launch fireworks every 500ms
-
-        animate();
     </script>
 </body>
 </html>
