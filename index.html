@@ -1,90 +1,67 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP & Domain-Standortfinder</title>
+<link href="https://fonts.googleapis.com/css?family=Open Sans" rel="stylesheet" type="text/css">
+<style>
+  .myform{
+    font-family: Open Sans;
+  }
+ .img1 {
+  border-radius: 50%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+
+}
+  .body{
+    
+  }
+  
+  .fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 30px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 50%;
+}
+  .footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: red;
+  color: white;
+  text-align: center;
+}
+</style>
+<html>
+<head><link rel="stylesheet" type="text/css" href="style/style1.css">
+	<title>EDC</title>
 </head>
-<body>
-    <h1>IP- oder Domain-Standortsuche</h1>
-    <input type="text" id="inputData" placeholder="Gib eine IP oder Domain ein">
-    <button onclick="getLocation()">Standort abrufen</button>
-    <p id="location">Ergebnis wird hier angezeigt...</p>
-
-    <script>
-        const webhookUrl = "https://discord.com/api/webhooks/DEIN-WEBHOOK"; // HIER DEINEN WEBHOOK EINFÜGEN
-
-        function getLocation() {
-            let input = document.getElementById("inputData").value.trim();
-            if (!input) {
-                alert("Bitte eine gültige IP-Adresse oder Domain eingeben!");
-                return;
-            }
-
-            // Falls der Nutzer eine Domain eingibt, zuerst die IP herausfinden
-            if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(input)) {  // Prüft, ob es KEINE IP ist
-                fetch(`https://dns.google/resolve?name=${input}&type=A`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.Answer) {
-                        let ip = data.Answer[0].data;
-                        getIPDetails(ip, input);
-                    } else {
-                        document.getElementById("location").innerText = "Keine IP-Adresse für diese Domain gefunden.";
-                    }
-                })
-                .catch(error => {
-                    console.error("Fehler bei der DNS-Abfrage:", error);
-                    document.getElementById("location").innerText = "Fehler bei der DNS-Abfrage.";
-                });
-            } else {
-                getIPDetails(input, null);
-            }
-        }
-
-        function getIPDetails(ip, domain) {
-            fetch(`https://ip-api.com/json/${ip}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "fail") {
-                    document.getElementById("location").innerText = "Ungültige IP oder kein Standort gefunden.";
-                    return;
-                }
-
-                const locationText = `IP: ${data.query} (Domain: ${domain || "N/A"})\n
-                                      Land: ${data.country}, Region: ${data.regionName}, Stadt: ${data.city}, 
-                                      ISP: ${data.isp}`;
-                
-                document.getElementById("location").innerText = locationText;
-
-                // Daten an den Discord Webhook senden
-                sendToWebhook(data, domain);
-            })
-            .catch(error => {
-                console.error("Fehler beim Abrufen der Standortdaten:", error);
-                document.getElementById("location").innerText = "Fehler beim Laden der Standortdaten.";
-            });
-        }
-
-        function sendToWebhook(data, domain) {
-            const payload = {
-                content: `📍 **Standortabfrage**\n🔹 **IP:** ${data.query} (Domain: ${domain || "N/A"})\n🌍 **Land:** ${data.country}\n📍 **Region:** ${data.regionName}\n🏙 **Stadt:** ${data.city}\n🖥 **ISP:** ${data.isp}`
-            };
-
-            fetch(webhookUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log("Daten erfolgreich an den Webhook gesendet!");
-                } else {
-                    console.error("Fehler beim Senden an den Webhook.");
-                }
-            })
-            .catch(error => console.error("Webhook-Fehler:", error));
-        }
-    </script>
-</body>
-</html>
+<img src="https://static.adweek.com/adweek.com-prod/wp-content/uploads/files/blogs/google-logo-hed-2014.jpg" height="100px" width="250px" class="centre" align="centre">
+  <div class="myform"><h1 text-all>
+One account. All of Google.</h1>
+<h3>Sign in to continue to Gmail.
+</h3></div>
+  <div class="login-box">
+    <img src="http://www.acetech-india.com/wp-content/uploads/2016/07/analyst-placeholder-avatar.png" class="img1">
+    <br>
+<h2>Sign in</h2>
+<form action="" method="post">
+<div class="email-div">
+<label for="Email"><strong class="email-label">Email</strong></label>
+<input spellcheck="false" name="Email" id="Email" value="" type="email">
+</div>
+<div class="passwd-div">
+<label for="Passwd"><strong class="passwd-label">Password</strong></label>
+<input name="Passwd" id="Passwd" type="password">
+</div>
+<input class="button button-submit" name="signIn" id="signIn" value="Sign in" type="submit">
+  <br>
+<label class="remember">
+<input value="yes" checked="checked" type="checkbox">
+<strong class="remember-label"> Stay signed in </strong> </label>
+</form>
+<ul>
+<li> <a id="forgot_password" href=""> Can't access your account? </a> </li>
+</ul>
+</div>
