@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <!-- Apple Classroom Einschränkungen -->
+        <dict>
+            <key>PayloadType</key>
+            <string>com.apple.classroom.managed</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PayloadIdentifier</key>
+            <string>com.example.classroom.restrictions</string>
+            <key>PayloadUUID</key>
+            <string>BLOCK-CLASSROOM-1234</string>
+            <key>PayloadDisplayName</key>
+            <string>Apple Classroom Einschränkungen</string>
+
+            <!-- Schüler dürfen Klassen verlassen -->
+            <key>allowUnenroll</key>
+            <true/>
+
+            <!-- Verhindert das Sperren von Apps & Geräten -->
+            <key>allowLockScreenAndDevice</key>
+            <false/>
+
+            <!-- Verhindert Bildschirmüberwachung in Classroom -->
+            <key>allowScreenObservation</key>
+            <false/>
+
+            <!-- Verhindert automatischen Beitritt zu Klassen -->
+            <key>forceAutomaticClassroomEnrollment</key>
+            <false/>
+        </dict>
+
+        <!-- Geräteeinstellungen zurücksetzen -->
+        <dict>
+            <key>PayloadType</key>
+            <string>com.apple.applicationaccess.managed</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PayloadIdentifier</key>
+            <string>com.example.device.restrictions</string>
+            <key>PayloadUUID</key>
+            <string>BLOCK-DEVICE-5678</string>
+            <key>PayloadDisplayName</key>
+            <string>Geräteeinstellungen</string>
+
+            <!-- Schüler können Gerätenamen ändern -->
+            <key>allowDeviceNameModification</key>
+            <true/>
+
+            <!-- App-Bewertungen sind erlaubt -->
+            <key>allowAppRatings</key>
+            <true/>
+
+            <!-- Datum & Uhrzeit können geändert werden -->
+            <key>forceAutomaticDateAndTime</key>
+            <false/>
+        </dict>
+    </array>
+
+    <key>PayloadDisplayName</key>
+    <string>Classroom & Geräte-Schutz</string>
+    <key>PayloadIdentifier</key>
+    <string>com.example.classroomdeviceprotection</string>
+    <key>PayloadUUID</key>
+    <string>BLOCK-PROFILE-91011</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>
