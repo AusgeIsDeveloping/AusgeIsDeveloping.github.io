@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Server Crash SSB.13</title>
+  <style>
+    * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-size: cover;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .pc-mode body {
+      font-size: 20px;
+    }
+
+    .button {
+      padding: 15px 25px;
+      font-size: 18px;
+      color: white;
+      background: linear-gradient(145deg, #ff3c3c, #d60000);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 10px auto;
+      width: 220px;
+      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+      text-align: center;
+      display: block;
+    }
+
+    .button:hover {
+      background: linear-gradient(145deg, #d60000, #ff3c3c);
+    }
+
+    .menu, #successMessage, #loadingScreen {
+      display: none;
+      text-align: center;
+    }
+
+    .input-field {
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      width: 220px;
+      text-align: center;
+      background-color: #1e1e1e;
+      border: 1px solid #555;
+      border-radius: 8px;
+      color: white;
+    }
+
+    .pc-mode .input-field {
+      width: 400px;
+      font-size: 18px;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #ff4d4d;
+    }
+
+    #loadingScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000dd;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #settingsMenu, #creditsMenu, #versionMenu {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      padding: 15px;
+      z-index: 20;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      display: none;
+    }
+
+    #settingsMenu button, #versionMenu button {
+      padding: 8px 15px;
+      font-size: 14px;
+      color: white;
+      background: linear-gradient(145deg, #333, #222);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px 0;
+      width: 180px;
+      text-align: center;
+    }
+
+    #settingsMenu button:hover, #versionMenu button:hover {
+      background: linear-gradient(145deg, #222, #333);
+    }
+
+    #settingsButton {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #333;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    #creditsMenu p, #creditsMenu a {
+      margin: 10px 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    #creditsMenu a:hover {
+      text-decoration: underline;
+    }
+
+    #versionMenu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 30;
+    }
+
+    #versionMenu div {
+      text-align: center;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    #betaVersion {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <button id="settingsButton" class="button">Settings</button>
+
+  <button id="crashButton" class="button">Crash</button>
+  <a href="https://t.me/+rIzPiYklCs8zZDRi" target="_blank" style="margin-left: -10px;">
+    <button class="button">How to Crash</button>
+  </a>
+
+  <div id="menu" class="menu">
+    <h2 id="menuTitle">Enter Server ID and Port</h2>
+    <input id="ip" class="input-field" type="text" placeholder="Server ID" maxlength="30" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+    <input id="port" class="input-field" type="text" placeholder="Port" maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+    <input id="duration" class="input-field" type="text" placeholder="Duration (ms)" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+    <button id="confirmButton" class="button">Confirm</button>
+    <button id="backToMainButton" class="button">Back</button>
+  </div>
+
+  <div id="loadingScreen">
+    <p id="centerText">Please wait, the script is running...</p>
+  </div>
+
+  <div id="successMessage">
+    <p>Successfully Crashed!</p>
+    <button id="backButton" class="button">Back</button>
+  </div>
+
+  <div id="settingsMenu">
+    <button id="creditsButton" class="button">Credits</button>
+    <button id="versionButton" class="button">Versions</button>
+    <a href="https://t.me/server_crash_bs_support" target="_blank">
+      <button class="button">Any problems?</button>
+    </a>
+  </div>
+
+  <div id="creditsMenu">
+    <p>Server crash ssb.v.13 mod APK</p>
+    <p>Script: @srv_crsh</p>
+    <p>Telegram: <a href="https://t.me/server_crash_bs" target="_blank">t.me/server_crash_bs</a></p>
+    <p>Discord: <a href="https://discord.gg/ZEnbDxc5Hd" target="_blank">discord.gg/ZEnbDxc5Hd</a></p>
+    <button id="backCreditsButton" class="button">Back</button>
+  </div>
+
+  <div id="versionMenu">
+    <div>
+      <h2>Select Version</h2>
+      <button id="mobileMode" class="button">Mobile</button>
+      <button id="computerMode" class="button">Computer</button>
+      <button id="closeVersionMenu" class="button">Close</button>
+    </div>
+  </div>
+
+  <div id="betaVersion">Beta Version: 1.1.3</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const crashButton = document.getElementById('crashButton');
+      const menu = document.getElementById('menu');
+      const confirmButton = document.getElementById('confirmButton');
+      const backToMainButton = document.getElementById('backToMainButton');
+      const loadingScreen = document.getElementById('loadingScreen');
+      const successMessage = document.getElementById('successMessage');
+      const backButton = document.getElementById('backButton');
+      const settingsButton = document.getElementById('settingsButton');
+      const settingsMenu = document.getElementById('settingsMenu');
+      const creditsMenu = document.getElementById('creditsMenu');
+      const versionMenu = document.getElementById('versionMenu');
+      const versionButton = document.getElementById('versionButton');
+      const creditsButton = document.getElementById('creditsButton');
+      const backCreditsButton = document.getElementById('backCreditsButton');
+      const closeVersionMenuButton = document.getElementById('closeVersionMenu');
+      const pcModeButton = document.getElementById('computerMode');
+      const mobileModeButton = document.getElementById('mobileMode');
+
+      const ipInput = document.getElementById('ip');
+      const portInput = document.getElementById('port');
+      const durationInput = document.getElementById('duration');
+
+      settingsButton.onclick = () => {
+        settingsMenu.style.display = settingsMenu.style.display === "block" ? "none" : "block";
+        creditsMenu.style.display = "none";
+        versionMenu.style.display = "none";
+      };
+
+      creditsButton.onclick = () => {
+        creditsMenu.style.display = "block";
+        settingsMenu.style.display = "none";
+      };
+
+      backCreditsButton.onclick = () => {
+        creditsMenu.style.display = "none";
+        settingsMenu.style.display = "block";
+      };
+
+      versionButton.onclick = () => {
+        versionMenu.style.display = "flex";
+        settingsMenu.style.display = "none";
+      };
+
+      closeVersionMenuButton.onclick = () => {
+        versionMenu.style.display = "none";
+        settingsMenu.style.display = "block";
+      };
+
+      crashButton.onclick = () => {
+        crashButton.style.display = "none";
+        menu.style.display = "block";
+      };
+
+      backToMainButton.onclick = () => {
+        menu.style.display = "none";
+        ipInput.value = "";
+        portInput.value = "";
+        durationInput.value = "";
+        crashButton.style.display = "block";
+      };
+
+      confirmButton.onclick = () => {
+        const ip = ipInput.value;
+        const port = portInput.value;
+        const duration = durationInput.value;
+
+        if (!ip || !port) {
+          alert("Please fill out all fields!");
+          return;
+        }
+
+        if (port !== "443") {
+          alert("Crashing is only allowed on port 443.");
+          return;
+        }
+
+        menu.style.display = "none";
+        loadingScreen.style.display = "flex";
+
+        setTimeout(() => {
+          loadingScreen.style.display = "none";
+          successMessage.style.display = "block";
+        }, 5000);
+      };
+
+      backButton.onclick = () => {
+        successMessage.style.display = "none";
+        ipInput.value = "";
+        portInput.value = "";
+        durationInput.value = "";
+        crashButton.style.display = "block";
+      };
+
+      pcModeButton.onclick = () => {
+        document.documentElement.classList.add("pc-mode");
+        versionMenu.style.display = "none";
+      };
+
+      mobileModeButton.onclick = () => {
+        document.documentElement.classList.remove("pc-mode");
+        versionMenu.style.display = "none";
+      };
+    });
+  </script>
+</body>
+</html>
